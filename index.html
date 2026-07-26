@@ -1,160 +1,745 @@
 <!DOCTYPE html>
 <html lang="si">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GitHub Short Course - Sinhala</title>
-    <style>
-        /* CSS: වෙබ් අඩවිය ලස්සන කරන කොටස */
-        :root {
-            --bg-color: #f6f8fa;
-            --text-color: #24292f;
-            --card-bg: #ffffff;
-            --primary: #2da44e;
-            --border: #d0d7de;
-        }
-        
-        /* Dark Mode සඳහා වර්ණ */
-        body.dark-mode {
-            --bg-color: #0d1117;
-            --text-color: #c9d1d9;
-            --card-bg: #161b22;
-            --primary: #238636;
-            --border: #30363d;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Git සහ GitHub — ආරම්භකයින් සඳහා සම්පූර්ණ මාර්ගෝපදේශය</title>
+<meta name="description" content="Git සහ GitHub භාවිතා කරන ආකාරය ශුන්‍යයේ සිට සිංහලෙන් ඉගෙන ගන්න — Install කිරීමේ සිට Pull Request දක්වා.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#12100d; --bg-soft:#17140f; --surface:#1d1913; --surface-2:#241f18;
+    --border:#372f24; --border-soft:#2a251c;
+    --text:#f1e9da; --text-dim:#b7ab97; --text-faint:#7c7262;
+    --amber:#e8a33d; --amber-soft:rgba(232,163,61,.14);
+    --violet:#a692f2; --violet-soft:rgba(166,146,242,.14);
+    --green:#6cbf7f; --red:#e2685f;
+    --radius:12px;
+    --mono:'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --sinhala:'Noto Sans Sinhala', sans-serif;
+    --sidebar-w:290px; --mbar-h:56px; --pbar-h:3px;
+  }
+  body.light{
+    --bg:#faf6ec; --bg-soft:#f2ecdc; --surface:#ffffff; --surface-2:#f6f1e4;
+    --border:#e3d8bd; --border-soft:#ece4d0;
+    --text:#241f16; --text-dim:#5c5445; --text-faint:#8a8171;
+    --amber:#b9761c; --amber-soft:rgba(185,118,28,.12);
+    --violet:#6a55d6; --violet-soft:rgba(106,85,214,.12);
+    --green:#2f8f52; --red:#c73f35;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:var(--sinhala); line-height:1.7; -webkit-font-smoothing:antialiased;
+    transition:background .25s ease,color .25s ease;
+  }
+  a{color:inherit;}
+  ::selection{background:var(--amber-soft); color:var(--text);}
+  .eyebrow{
+    font-family:var(--mono); font-size:.72rem; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--amber); display:flex; align-items:center; gap:.5rem; margin-bottom:.9rem;
+  }
+  .eyebrow::before{content:"";width:18px;height:1px;background:var(--amber);display:inline-block;}
+  h1,h2,h3{font-family:var(--sinhala); font-weight:800; margin:0 0 .6rem;}
+  h2{font-size:clamp(1.35rem,2.6vw,1.85rem); font-weight:700;}
+  h3{font-size:1.05rem; font-weight:700;}
+  p{margin:0 0 1rem; color:var(--text-dim);}
+  code, .mono{font-family:var(--mono);}
+  .accent{color:var(--amber);}
+  .accent-v{color:var(--violet);}
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 20px;
-            transition: background-color 0.3s, color 0.3s;
-        }
+  /* progress bar */
+  #progressBar{position:fixed; top:0; left:0; height:var(--pbar-h); width:0%; background:linear-gradient(90deg,var(--amber),var(--violet)); z-index:100; transition:width .1s linear;}
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
+  /* mobile bar */
+  .mobile-bar{
+    display:none; position:fixed; top:var(--pbar-h); left:0; right:0; height:var(--mbar-h);
+    background:var(--bg-soft); border-bottom:1px solid var(--border-soft); z-index:60;
+    align-items:center; justify-content:space-between; padding:0 .9rem;
+  }
+  .icon-btn{background:none; border:1px solid var(--border); color:var(--text); width:38px; height:38px; border-radius:8px; display:flex; align-items:center; justify-content:center; cursor:pointer;}
+  .mobile-bar-title{font-family:var(--mono); font-size:.8rem; color:var(--text-dim); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
 
-        header {
-            text-align: center;
-            padding: 30px 0;
-            border-bottom: 2px solid var(--border);
-            margin-bottom: 30px;
-        }
+  .overlay{position:fixed; inset:0; background:rgba(0,0,0,.55); opacity:0; pointer-events:none; transition:opacity .25s ease; z-index:55;}
+  .overlay.show{opacity:1; pointer-events:auto;}
 
-        h1 { margin-bottom: 10px; }
-        p.subtitle { color: #57606a; margin-bottom: 20px; }
-        body.dark-mode p.subtitle { color: #8b949e; }
+  .page-shell{display:grid; grid-template-columns:var(--sidebar-w) 1fr; min-height:100vh;}
 
-        .card {
-            background: var(--card-bg);
-            padding: 20px;
-            border-radius: 10px;
-            border: 1px solid var(--border);
-            border-left: 6px solid var(--primary);
-            margin-bottom: 20px;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
+  /* sidebar */
+  .sidebar{
+    position:sticky; top:0; height:100vh; overflow-y:auto; background:var(--bg-soft);
+    border-right:1px solid var(--border-soft); padding:1.4rem 1.2rem 2rem; scrollbar-width:thin;
+  }
+  .sidebar-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:1.4rem;}
+  .brand{display:flex; align-items:center; gap:.55rem; font-family:var(--mono); font-weight:700; font-size:.92rem;}
+  .brand svg{flex-shrink:0;}
+  .theme-btn{background:var(--surface); border:1px solid var(--border); border-radius:8px; width:36px; height:36px; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--text);}
 
-        .card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
+  .progress-ring-wrap{text-align:center; margin-bottom:1.6rem; padding-bottom:1.4rem; border-bottom:1px solid var(--border-soft);}
+  .progress-ring{
+    --pct:0; width:64px; height:64px; border-radius:50%; margin:0 auto .5rem;
+    background:conic-gradient(var(--amber) calc(var(--pct)*1%), var(--border-soft) 0);
+    display:flex; align-items:center; justify-content:center; position:relative;
+  }
+  .progress-ring::before{content:""; position:absolute; inset:6px; border-radius:50%; background:var(--bg-soft);}
+  .progress-ring span{position:relative; z-index:2; font-family:var(--mono); font-size:.72rem; font-weight:700;}
+  .progress-label{font-size:.72rem; color:var(--text-faint); margin:0; font-family:var(--mono); letter-spacing:.05em;}
 
-        .card code {
-            background-color: rgba(175, 184, 193, 0.2);
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: monospace;
-        }
+  .commit-graph{list-style:none; margin:0; padding:0; position:relative;}
+  .commit-graph::before{content:""; position:absolute; left:7px; top:8px; bottom:8px; width:2px; background:var(--border);}
+  .commit-graph li{position:relative; margin-bottom:1.15rem;}
+  .commit-graph a{display:flex; align-items:center; gap:.75rem; text-decoration:none; color:var(--text-dim); padding:.15rem 0;}
+  .node{width:16px; height:16px; border-radius:50%; background:var(--surface-2); border:2px solid var(--border); flex-shrink:0; position:relative; z-index:2; transition:all .2s ease;}
+  .commit-graph li.active .node{background:var(--amber); border-color:var(--amber); box-shadow:0 0 0 4px var(--amber-soft);}
+  .commit-graph li.active a{color:var(--text);}
+  .commit-graph li.done .node{background:var(--green); border-color:var(--green);}
+  .label{display:flex; flex-direction:column; line-height:1.25;}
+  .label em{font-style:normal; font-family:var(--mono); font-size:.65rem; letter-spacing:.08em; color:var(--text-faint);}
+  .branch-offshoot{color:var(--violet); margin-left:.3rem; display:inline-flex; opacity:.85;}
 
-        /* පාඩම සම්පූර්ණ කළ විට පෙන්වන විලාසය */
-        .completed {
-            opacity: 0.5;
-            text-decoration: line-through;
-            border-left: 6px solid #8250df;
-        }
+  .sidebar-foot{display:flex; flex-direction:column; gap:.5rem; margin-top:1.6rem; padding-top:1.2rem; border-top:1px solid var(--border-soft);}
+  .sidebar-foot a{font-family:var(--mono); font-size:.75rem; color:var(--text-faint); text-decoration:none;}
+  .sidebar-foot a:hover{color:var(--violet);}
 
-        button {
-            background-color: var(--card-bg);
-            color: var(--text-color);
-            border: 1px solid var(--border);
-            padding: 10px 20px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            transition: 0.2s;
-        }
+  /* content */
+  .content{padding:3.2rem 3.2rem 2rem; max-width:920px;}
 
-        button:hover {
-            background-color: var(--border);
-        }
-    </style>
+  /* hero */
+  .hero{padding-bottom:3rem; margin-bottom:2.5rem; border-bottom:1px solid var(--border-soft);}
+  .hero h1{font-size:clamp(2rem,4.6vw,3.1rem); line-height:1.2;}
+  .hero p.lead{font-size:1.05rem; max-width:52ch; margin-bottom:1.7rem;}
+  .hero-actions{display:flex; gap:.8rem; flex-wrap:wrap; margin-bottom:2.2rem;}
+  .btn{
+    font-family:var(--sinhala); font-weight:600; font-size:.92rem; padding:.8rem 1.4rem; border-radius:9px;
+    border:1px solid transparent; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:.5rem;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .btn:hover{transform:translateY(-2px);}
+  .btn-primary{background:var(--amber); color:#1c1206;}
+  .btn-primary:hover{box-shadow:0 8px 24px var(--amber-soft);}
+  .btn-ghost{background:transparent; border-color:var(--border); color:var(--text);}
+  .btn-ghost:hover{border-color:var(--violet); color:var(--violet);}
+
+  .terminal-window{background:var(--surface); border:1px solid var(--border); border-radius:12px; overflow:hidden; box-shadow:0 24px 60px -20px rgba(0,0,0,.5);}
+  .terminal-titlebar{display:flex; align-items:center; gap:6px; padding:.7rem .9rem; background:var(--surface-2); border-bottom:1px solid var(--border);}
+  .terminal-titlebar span{width:11px; height:11px; border-radius:50%; display:inline-block;}
+  .terminal-titlebar span:nth-child(1){background:#e2685f;}
+  .terminal-titlebar span:nth-child(2){background:#e8c23d;}
+  .terminal-titlebar span:nth-child(3){background:#6cbf7f;}
+  .terminal-titlebar em{font-style:normal; font-family:var(--mono); font-size:.72rem; color:var(--text-faint); margin-left:.6rem;}
+  .terminal-body{padding:1.3rem 1.4rem; font-family:var(--mono); font-size:.86rem; line-height:1.9; min-height:210px;}
+  .t-line{white-space:pre-wrap; word-break:break-word;}
+  .t-prompt{color:var(--violet); margin-right:.4rem;}
+  .t-cmd{color:var(--text);}
+  .t-out{color:var(--text-faint);}
+  .cursor{display:inline-block; width:7px; height:1.05em; background:var(--amber); vertical-align:text-bottom; animation:blink 1s steps(1) infinite;}
+  @keyframes blink{50%{opacity:0;}}
+
+  /* sections */
+  .section{padding:2.4rem 0; border-bottom:1px solid var(--border-soft); scroll-margin-top:1.5rem;}
+  .section:last-of-type{border-bottom:none;}
+  .section-head{display:flex; align-items:flex-start; justify-content:space-between; gap:1rem; margin-bottom:1.1rem;}
+  .done-btn{
+    flex-shrink:0; font-family:var(--mono); font-size:.7rem; padding:.45rem .8rem; border-radius:20px;
+    border:1px solid var(--border); background:transparent; color:var(--text-faint); cursor:pointer; white-space:nowrap;
+    transition:all .2s ease;
+  }
+  .done-btn.is-done{background:var(--green); border-color:var(--green); color:#0d1f11;}
+
+  .two-col{display:grid; grid-template-columns:1fr 1fr; gap:1.1rem;}
+  .info-card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.3rem 1.4rem;}
+  .info-card.git{border-top:3px solid var(--amber);}
+  .info-card.hub{border-top:3px solid var(--violet);}
+  .info-card h3{display:flex; align-items:center; gap:.5rem;}
+  .analogy{background:var(--surface-2); border:1px dashed var(--border); border-radius:var(--radius); padding:1rem 1.2rem; font-size:.94rem; margin-top:.5rem;}
+
+  .step-list{list-style:none; margin:0; padding:0; counter-reset:step;}
+  .step-list > li{counter-increment:step; position:relative; padding:0 0 1.4rem 2.6rem; margin-bottom:0;}
+  .step-list > li::before{
+    content:counter(step); position:absolute; left:0; top:0; width:1.9rem; height:1.9rem; border-radius:50%;
+    background:var(--surface-2); border:1px solid var(--border); color:var(--amber); font-family:var(--mono); font-weight:700;
+    font-size:.8rem; display:flex; align-items:center; justify-content:center;
+  }
+  .step-list > li::after{content:""; position:absolute; left:.95rem; top:1.9rem; bottom:0; width:1px; background:var(--border-soft);}
+  .step-list > li:last-child::after{display:none;}
+  .step-list h4{margin:0 0 .35rem; font-size:.98rem; font-weight:700;}
+
+  .os-tabs{display:flex; gap:.5rem; margin-bottom:1rem; flex-wrap:wrap;}
+  .os-tab{font-family:var(--mono); font-size:.78rem; padding:.5rem 1rem; border-radius:8px; border:1px solid var(--border); background:var(--surface); cursor:pointer; color:var(--text-dim);}
+  .os-tab.active{background:var(--amber-soft); border-color:var(--amber); color:var(--amber);}
+  .os-panel{display:none;}
+  .os-panel.active{display:block;}
+
+  pre{
+    background:var(--bg-soft); border:1px solid var(--border); border-radius:9px; padding:.95rem 1.1rem;
+    overflow-x:auto; margin:0 0 .9rem; position:relative;
+  }
+  pre code{font-family:var(--mono); font-size:.84rem; color:var(--amber); line-height:1.7; white-space:pre;}
+  .code-wrap{position:relative;}
+  .copy-btn{
+    position:absolute; top:.55rem; right:.55rem; background:var(--surface-2); border:1px solid var(--border);
+    color:var(--text-faint); font-family:var(--mono); font-size:.68rem; padding:.35rem .6rem; border-radius:6px; cursor:pointer;
+    display:flex; align-items:center; gap:.3rem;
+  }
+  .copy-btn:hover{color:var(--violet); border-color:var(--violet);}
+
+  .cmd-grid{display:grid; grid-template-columns:1fr 1fr; gap:1rem;}
+  .cmd-card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.1rem 1.2rem;}
+  .cmd-badge{display:inline-block; font-family:var(--mono); font-size:.82rem; color:var(--bg); background:var(--amber); padding:.32rem .7rem; border-radius:6px; margin-bottom:.6rem; font-weight:700;}
+  .cmd-tag{float:right; font-family:var(--mono); font-size:.65rem; color:var(--violet); border:1px solid var(--violet); border-radius:20px; padding:.15rem .55rem;}
+  .cmd-card p{margin:0; font-size:.93rem;}
+
+  .flow{display:flex; align-items:center; gap:.6rem; flex-wrap:wrap; margin:1.2rem 0;}
+  .flow-step{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:.9rem 1.1rem; font-size:.86rem; flex:1; min-width:120px; text-align:center;}
+  .flow-arrow{color:var(--text-faint); font-size:1.1rem;}
+
+  table{width:100%; border-collapse:collapse; font-size:.88rem;}
+  thead th{text-align:left; font-family:var(--mono); font-size:.7rem; letter-spacing:.06em; text-transform:uppercase; color:var(--text-faint); padding:.6rem .8rem; border-bottom:1px solid var(--border);}
+  tbody td{padding:.7rem .8rem; border-bottom:1px solid var(--border-soft); vertical-align:top;}
+  tbody td:first-child{font-family:var(--mono); color:var(--amber); white-space:nowrap;}
+  tbody tr:hover{background:var(--surface);}
+
+  .diff-add{color:var(--green);} .diff-del{color:var(--red);}
+
+  .note{background:var(--violet-soft); border:1px solid var(--violet); border-radius:9px; padding:.85rem 1.1rem; font-size:.88rem; color:var(--text); margin:1rem 0;}
+  .note strong{color:var(--violet);}
+
+  .site-footer{padding:2.4rem 0 1rem; text-align:center;}
+  .site-footer p{font-size:.85rem;}
+  .footer-links{display:flex; justify-content:center; gap:1.3rem; margin-top:.6rem; flex-wrap:wrap;}
+  .footer-links a{font-family:var(--mono); font-size:.78rem; color:var(--text-faint); text-decoration:none;}
+  .footer-links a:hover{color:var(--amber);}
+
+  @media (max-width:960px){
+    .mobile-bar{display:flex;}
+    .page-shell{grid-template-columns:1fr; padding-top:calc(var(--mbar-h) + var(--pbar-h));}
+    .sidebar{
+      position:fixed; top:0; left:0; height:100vh; width:280px; z-index:56;
+      transform:translateX(-100%); transition:transform .25s ease; box-shadow:20px 0 40px rgba(0,0,0,.3);
+    }
+    .sidebar.open{transform:translateX(0);}
+    .content{padding:2rem 1.3rem 1.5rem;}
+    .two-col{grid-template-columns:1fr;}
+    .cmd-grid{grid-template-columns:1fr;}
+  }
+  @media (max-width:520px){
+    .hero-actions{flex-direction:column; align-items:stretch;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto;}
+    .cursor{animation:none;}
+  }
+</style>
 </head>
 <body>
 
-    <div class="container">
-        <header>
-            <h1>🚀 GitHub කෙටි පාඨමාලාව</h1>
-            <p class="subtitle">මුල සිට සරලව සිංහලෙන් - Lakshan විසින් නිර්මාණය කරන ලදී</p>
-            <button id="themeToggle">🌙 Dark Mode</button>
-        </header>
+<div id="progressBar"></div>
 
-        <p style="text-align: center; font-size: 14px; margin-bottom: 30px;">
-            <i>උපදෙස්: පාඩමක් අවසන් කළ පසු එය මත Click කරන්න.</i>
-        </p>
+<header class="mobile-bar">
+  <button id="navToggle" class="icon-btn" aria-label="මෙනුව">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+  <span class="mobile-bar-title" id="mobileBarTitle">Git &amp; GitHub — සිංහල මාර්ගෝපදේශය</span>
+  <button id="themeToggleMobile" class="icon-btn" aria-label="Theme">🌙</button>
+</header>
+<div class="overlay" id="overlay"></div>
 
-        <div class="card" onclick="toggleComplete(this)">
-            <h2>1. මූලික කමාන්ඩ්ස් (Basic Commands)</h2>
-            <p>පරිගණකයේ කෝඩ් GitHub එකට යැවීමට <code>git add .</code>, <code>git commit -m "massage"</code> සහ <code>git push</code> භාවිතා කරයි.</p>
-        </div>
+<div class="page-shell">
 
-        <div class="card" onclick="toggleComplete(this)">
-            <h2>2. අන්තර්ජාලයෙන් ගැනීම (Pull)</h2>
-            <p>වෙනත් අයෙක් හෝ වෙනත් පරිගණකයකින් කළ වෙනස්කම් තමන්ගේ පරිගණකයට ගැනීමට <code>git pull</code> භාවිතා කරයි.</p>
-        </div>
-
-        <div class="card" onclick="toggleComplete(this)">
-            <h2>3. Branches (අතු බෙදීම)</h2>
-            <p>ප්‍රධාන කෝඩ් එකට හානියක් නොකර අලුත් දේවල් අත්හදා බැලීමට <code>git checkout -b branch-name</code> මගින් අලුත් අත්තක් සාදාගනී.</p>
-        </div>
-
-        <div class="card" onclick="toggleComplete(this)">
-            <h2>4. Pull Requests (PR)</h2>
-            <p>වෙනත් Branch එකක කළ වෙනස්කම් ප්‍රධාන කෝඩ් එකට (main) එකතු කිරීමට පෙර අනුමැතිය ලබා ගැනීමට PR එකක් සාදයි.</p>
-        </div>
-
-        <div class="card" onclick="toggleComplete(this)">
-            <h2>5. GitHub Pages (Hosting)</h2>
-            <p>තමන් සෑදූ HTML, CSS, JS වෙබ් අඩවියක් සම්පූර්ණයෙන්ම නොමිලේ අන්තර්ජාලයට (Live) එකතු කිරීමට මෙය භාවිතා කරයි.</p>
-        </div>
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <div class="brand">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12h8M12 8v8"/></svg>
+        <span>Git<span class="accent">Hub</span></span>
+      </div>
+      <button class="theme-btn" id="themeToggleDesktop" aria-label="Theme toggle">🌙</button>
     </div>
 
-    <script>
-        // JavaScript: වෙබ් අඩවියට පණ දෙන කොටස 
+    <div class="progress-ring-wrap">
+      <div class="progress-ring" id="progressRing"><span id="progressText">0/9</span></div>
+      <p class="progress-label">නිම කළ පාඩම්</p>
+    </div>
 
-        // Dark mode මාරු කරන කේතය
-        const themeToggle = document.getElementById('themeToggle');
-        const body = document.body;
+    <ul class="commit-graph" id="commitGraph">
+      <li data-target="intro"><a href="#intro"><span class="node"></span><span class="label"><em>00</em>හැඳින්වීම</span></a></li>
+      <li data-target="install-git"><a href="#install-git"><span class="node"></span><span class="label"><em>01</em>Git Install කිරීම</span></a></li>
+      <li data-target="install-vscode"><a href="#install-vscode"><span class="node"></span><span class="label"><em>02</em>VS Code Install කිරීම</span></a></li>
+      <li data-target="setup"><a href="#setup"><span class="node"></span><span class="label"><em>03</em>සකස් කිරීම</span></a></li>
+      <li data-target="basics"><a href="#basics"><span class="node"></span><span class="label"><em>04</em>මූලික Commands</span></a></li>
+      <li data-target="branches" class="branch-node"><a href="#branches"><span class="node"></span><span class="label"><em>05</em>Branches</span><span class="branch-offshoot" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg></span></a></li>
+      <li data-target="upload"><a href="#upload"><span class="node"></span><span class="label"><em>06</em>GitHub වෙත Upload</span></a></li>
+      <li data-target="pr"><a href="#pr"><span class="node"></span><span class="label"><em>07</em>Pull Requests</span></a></li>
+      <li data-target="pages"><a href="#pages"><span class="node"></span><span class="label"><em>08</em>GitHub Pages</span></a></li>
+      <li data-target="cheatsheet"><a href="#cheatsheet"><span class="node"></span><span class="label"><em>09</em>Cheat Sheet</span></a></li>
+    </ul>
 
-        themeToggle.addEventListener('click', () => {
-            body.classList.toggle('dark-mode');
-            if (body.classList.contains('dark-mode')) {
-                themeToggle.textContent = '☀️ Light Mode';
-            } else {
-                themeToggle.textContent = '🌙 Dark Mode';
-            }
-        });
+    <div class="sidebar-foot">
+      <a href="https://git-scm.com/doc" target="_blank" rel="noopener">Git නිල Docs ↗</a>
+      <a href="https://docs.github.com" target="_blank" rel="noopener">GitHub නිල Docs ↗</a>
+    </div>
+  </nav>
 
-        // කාඩ් එකක් click කළාම කපා හැරෙන (completed) කේතය
-        function toggleComplete(element) {
-            element.classList.toggle('completed');
+  <main class="content">
+
+    <section class="hero" id="hero">
+      <p class="eyebrow">GIT × GITHUB — සිංහල මාර්ගෝපදේශය</p>
+      <h1>ශුන්‍යයේ සිට GitHub වීරයෙක් වෙන්න 🚀</h1>
+      <p class="lead">ඔබේ පරිගණකයේ Git install කරන එකේ සිට, VS Code එකෙන් GitHub වෙත Push කිරීම, Branch සෑදීම සහ Pull Request එකක් හදන එක දක්වා — සියල්ල පියවරෙන් පියවර, සරලව සිංහලෙන්.</p>
+      <div class="hero-actions">
+        <a href="#install-git" class="btn btn-primary">ආරම්භ කරමු →</a>
+        <a href="#cheatsheet" class="btn btn-ghost">Cheat Sheet එකට යන්න</a>
+      </div>
+
+      <div class="terminal-window">
+        <div class="terminal-titlebar"><span></span><span></span><span></span><em>bash — my-first-project</em></div>
+        <div class="terminal-body" id="terminalBody" aria-hidden="true"></div>
+      </div>
+    </section>
+
+    <!-- 00 -->
+    <section class="section" id="intro">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">00 · හැඳින්වීම</p>
+          <h2>Git සහ GitHub යනු කුමක්ද?</h2>
+        </div>
+        <button class="done-btn" data-target="intro">✓ ඉගෙන ගත්තා</button>
+      </div>
+      <div class="two-col">
+        <div class="info-card git">
+          <h3><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M8 8h8v8H8z"/></svg> Git</h3>
+          <p>Git කියන්නේ ඔබේ පරිගණකයේ install කරගන්නා <strong>Version Control මෙවලමක්</strong>. එය ඔබේ code files වල වෙනස්කම් time-line එකක් විදිහට save කරගෙන යනවා — කවුරු, කවදා, මොනවද වෙනස් කළේ කියලා. Internet නැතුව වුණත් වැඩ කරන්න පුළුවන්.</p>
+        </div>
+        <div class="info-card hub">
+          <h3><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.15-1.11-1.46-1.11-1.46-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.08 2.91.83.09-.65.35-1.08.63-1.33-2.22-.25-4.56-1.11-4.56-4.93 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.4 9.4 0 0 1 5 0c1.91-1.3 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.83-2.34 4.68-4.57 4.92.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10 10 0 0 0 12 2z"/></svg> GitHub</h3>
+          <p>GitHub කියන්නේ Git repository ඔබට <strong>Cloud එකේ (Online) ගබඩා කරගන්න</strong> පුළුවන් වෙබ් අඩවියක්. ඔබේ code එක internet එකෙන් backup කරගන්න, වෙන අයට share කරන්න, සහ team එකක් එක්ක එකට වැඩ කරන්න GitHub උදව් වෙනවා.</p>
+        </div>
+      </div>
+      <div class="analogy">
+        <strong class="accent">💡 සරල analogy එකක්:</strong> Git = Microsoft Word වගේ මෘදුකාංගයක් (tool). GitHub = Google Drive වගේ, ඔබ හදන දේවල් online තියාගන්න තැනක්. Git එකෙන් "save" කරලා, GitHub වෙත "upload" කරනවා.
+      </div>
+    </section>
+
+    <!-- 01 -->
+    <section class="section" id="install-git">
+      <div class="section-head">
+        <div><p class="eyebrow">01 · Install</p><h2>Git ඔබේ පරිගණකයට Install කිරීම</h2></div>
+        <button class="done-btn" data-target="install-git">✓ ඉගෙන ගත්තා</button>
+      </div>
+      <p>Git භාවිතා කරන්න පළමුව එය ඔබේ පරිගණකයට install කරගන්න ඕනේ. පහළ බටනය click කරලා ඔබේ Operating System එකට ගැලපෙන version එක download කරගන්න.</p>
+      <div class="hero-actions">
+        <a href="https://git-scm.com/downloads" target="_blank" rel="noopener" class="btn btn-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v13m0 0l-5-5m5 5l5-5M4 21h16"/></svg>
+          Git Download කරන්න (git-scm.com)
+        </a>
+      </div>
+
+      <div class="os-tabs" role="tablist">
+        <button class="os-tab active" data-os="win">🪟 Windows</button>
+        <button class="os-tab" data-os="mac">🍎 macOS</button>
+        <button class="os-tab" data-os="linux">🐧 Linux</button>
+      </div>
+
+      <div class="os-panel active" data-os-panel="win">
+        <ol class="step-list">
+          <li><h4>Installer එක Run කරන්න</h4><p>Download වූ <code>.exe</code> file එක double-click කරන්න.</p></li>
+          <li><h4>Next, Next, Next...</h4><p>Setup wizard එකේ default settings ම තියාගෙන "Next" click කරගෙන යන්න. "Adjusting your PATH environment" කියන step එකේදී <strong>"Git from the command line and also from 3rd-party software"</strong> option එක තෝරාගෙන ඉන්න.</p></li>
+          <li><h4>Install ඉවර කරන්න</h4><p>"Install" click කරලා ඉවර වෙනකම් ඉන්න. පහුව "Finish" click කරන්න.</p></li>
+        </ol>
+      </div>
+      <div class="os-panel" data-os-panel="mac">
+        <ol class="step-list">
+          <li><h4>ක්‍රමය 1: Installer</h4><p>Download වූ <code>.pkg</code> file එක open කරලා instructions follow කරන්න.</p></li>
+          <li><h4>ක්‍රමය 2: Homebrew (recommended)</h4><p>Terminal එක open කරලා පහත command එක run කරන්න:</p>
+            <div class="code-wrap"><pre><code>brew install git</code></pre><button class="copy-btn">📋 Copy</button></div>
+          </li>
+        </ol>
+      </div>
+      <div class="os-panel" data-os-panel="linux">
+        <ol class="step-list">
+          <li><h4>Ubuntu / Debian</h4>
+            <div class="code-wrap"><pre><code>sudo apt update
+sudo apt install git</code></pre><button class="copy-btn">📋 Copy</button></div>
+          </li>
+          <li><h4>Fedora</h4>
+            <div class="code-wrap"><pre><code>sudo dnf install git</code></pre><button class="copy-btn">📋 Copy</button></div>
+          </li>
+        </ol>
+      </div>
+
+      <div class="note"><strong>✔ Verify කරන්න:</strong> Install වුණාද කියලා check කරන්න Terminal / Command Prompt එකේ මේක type කරන්න. version number එකක් පෙන්නනවා නම් install හරි.</div>
+      <div class="code-wrap"><pre><code>git --version</code></pre><button class="copy-btn">📋 Copy</button></div>
+    </section>
+
+    <!-- 02 -->
+    <section class="section" id="install-vscode">
+      <div class="section-head">
+        <div><p class="eyebrow">02 · Install</p><h2>VS Code Install කිරීම</h2></div>
+        <button class="done-btn" data-target="install-vscode">✓ ඉගෙන ගත්තා</button>
+      </div>
+      <p><strong>Visual Studio Code (VS Code)</strong> කියන්නේ Microsoft සමාගමේ නොමිලේ code editor එකක්. එහි Git support built-in විදිහටම තියෙනවා, ඒ නිසා code ලියන එකත්, Git වැඩත් එකම තැනකින් කරගන්න පුළුවන්.</p>
+      <div class="hero-actions">
+        <a href="https://code.visualstudio.com/download" target="_blank" rel="noopener" class="btn btn-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v13m0 0l-5-5m5 5l5-5M4 21h16"/></svg>
+          VS Code Download කරන්න
+        </a>
+      </div>
+      <ol class="step-list">
+        <li><h4>Download කරන්න</h4><p>ඔබේ OS එකට ගැලපෙන installer එක download කරගන්න (Windows / Mac / Linux).</p></li>
+        <li><h4>Install කරන්න</h4><p>Windows නම් setup එකේදී <strong>"Add to PATH"</strong> සහ <strong>"Add 'Open with Code' action"</strong> checkbox දෙක select කරගෙන ඉන්න — ඒකෙන් පස්සේ folder එකක් මත right-click කරලා "Open with Code" කරන්න පුළුවන් වෙනවා.</p></li>
+        <li><h4>Extension එකක් දාගන්න (Recommended)</h4><p>VS Code එකේ වම් පැත්තේ Extensions icon එක click කරලා <code>GitLens</code> search කරලා install කරන්න — ඒකෙන් Git history එක visual ලෙස පෙන්නනවා.</p></li>
+      </ol>
+    </section>
+
+    <!-- 03 -->
+    <section class="section" id="setup">
+      <div class="section-head">
+        <div><p class="eyebrow">03 · Setup</p><h2>VS Code + Git සකස් කිරීම</h2></div>
+        <button class="done-btn" data-target="setup">✓ ඉගෙන ගත්තා</button>
+      </div>
+      <ol class="step-list">
+        <li>
+          <h4>Terminal එක Open කරන්න</h4>
+          <p>VS Code එකේ <code>Ctrl + `</code> (backtick key) press කරන්න — පහළින් Terminal එකක් open වෙනවා. ඔබේ ඉදිරි commands ටික මේකේ type කරන්න.</p>
+        </li>
+        <li>
+          <h4>ඔබේ Identity එක Git එකට කියන්න</h4>
+          <p>Commit කරන හැම වෙලාවකම "මේක කළේ මම" කියලා Git දැනගන්න ඕනේ. එක වතාවක් මේ දෙක run කරන්න (permanent ලෙස save වෙනවා):</p>
+          <div class="code-wrap"><pre><code>git config --global user.name "ඔබේ නම"
+git config --global user.email "your-email@example.com"</code></pre><button class="copy-btn">📋 Copy</button></div>
+        </li>
+        <li>
+          <h4>GitHub Account එකක් හදාගන්න</h4>
+          <p>නොමිලේ account එකක් හදාගන්න:</p>
+          <a href="https://github.com/join" target="_blank" rel="noopener" class="btn btn-ghost">GitHub Account හදන්න ↗</a>
+        </li>
+        <li>
+          <h4>VS Code එකට GitHub Login කරන්න</h4>
+          <p>වම් පැත්තේ <strong>Source Control</strong> icon එක (branch shape එක) click කරලා, පහළ වම් කෙළවරේ Accounts icon එකෙන් <strong>"Sign in with GitHub"</strong> තෝරන්න. Browser එකෙන් permission දීලා ආපහු එන්න.</p>
+        </li>
+      </ol>
+    </section>
+
+    <!-- 04 -->
+    <section class="section" id="basics">
+      <div class="section-head">
+        <div><p class="eyebrow">04 · Core Commands</p><h2>මූලික Git Commands</h2></div>
+        <button class="done-btn" data-target="basics">✓ ඉගෙන ගත්තා</button>
+      </div>
+      <p>මේවා තමයි ඔබ දිනපතා පාවිච්චි කරන Git commands. Terminal එකේ type කරලා Enter press කරන්න.</p>
+      <div class="cmd-grid">
+        <div class="cmd-card"><span class="cmd-tag">ආරම්භය</span><span class="cmd-badge">git init</span><p>වත්මන් folder එක නව Git repository එකක් බවට පත් කරයි.</p></div>
+        <div class="cmd-card"><span class="cmd-tag">පරීක්ෂාව</span><span class="cmd-badge">git status</span><p>මොනවද අලුතින් හදලා තියෙන්නේ / වෙනස් කරලා තියෙන්නේ කියලා පෙන්වයි.</p></div>
+        <div class="cmd-card"><span class="cmd-tag">Stage</span><span class="cmd-badge">git add .</span><p>වෙනස් කළ files ඔක්කොම commit කිරීමට සූදානම් (staged) කරයි.</p></div>
+        <div class="cmd-card"><span class="cmd-tag">Save</span><span class="cmd-badge">git commit -m "..."</span><p>Staged වෙනස්කම් විස්තරයක් සමඟ permanent ලෙස Git history එකට save කරයි.</p></div>
+        <div class="cmd-card"><span class="cmd-tag">History</span><span class="cmd-badge">git log</span><p>මේ දක්වා කරපු commits ලැයිස්තුව, කාලය සමඟ පෙන්වයි.</p></div>
+        <div class="cmd-card"><span class="cmd-tag">Copy</span><span class="cmd-badge">git clone &lt;url&gt;</span><p>GitHub එකේ ඇති repository එකක් සම්පූර්ණයෙන්ම ඔබේ පරිගණකයට copy කරයි.</p></div>
+        <div class="cmd-card"><span class="cmd-tag">Upload</span><span class="cmd-badge">git push</span><p>ඔබේ local commits GitHub වෙත upload කරයි.</p></div>
+        <div class="cmd-card"><span class="cmd-tag">Download</span><span class="cmd-badge">git pull</span><p>GitHub එකේ අලුතෙන් වෙනස් වූ දේ ඔබේ local repository එකට download කර ගනී.</p></div>
+      </div>
+      <div class="note"><strong>💡 සරල workflow එකක්:</strong> Code වෙනස් කරන්න → <code>git add .</code> → <code>git commit -m "message"</code> → <code>git push</code>. මේ පේළි හතරම ඔබේ දෛනික ජීවිතේ බොහෝම වාරයක් type කරයි.</div>
+    </section>
+
+    <!-- 05 -->
+    <section class="section" id="branches">
+      <div class="section-head">
+        <div><p class="eyebrow">05 · Branches</p><h2>Branches (අතු බෙදීම) යනු කුමක්ද?</h2></div>
+        <button class="done-btn" data-target="branches">✓ ඉගෙන ගත්තා</button>
+      </div>
+      <p>Branch එකක් කියන්නේ ඔබේ code එකේ <strong>වෙනම පිටපතක්</strong>. එහෙනම් ප්‍රධාන code එකට (main) හානියක් නොවී, අලුත් feature එකක් අත්හදා බලන්න පුළුවන්. හැම දෙයක්ම හරි නම් විතරක් ඒක main branch එකට ආපහු එකතු (merge) කරගන්නවා.</p>
+      <div class="cmd-grid">
+        <div class="cmd-card"><span class="cmd-tag">List</span><span class="cmd-badge">git branch</span><p>ඔබේ repository එකේ ඇති branches ලැයිස්තුව පෙන්වයි.</p></div>
+        <div class="cmd-card"><span class="cmd-tag">Create</span><span class="cmd-badge">git checkout -b new-feature</span><p>"new-feature" කියන නමින් අලුත් branch එකක් සාදා, ඒකට වහාම මාරු වේ.</p></div>
+        <div class="cmd-card"><span class="cmd-tag">Switch</span><span class="cmd-badge">git checkout main</span><p>ආපහු ප්‍රධාන (main) branch එකට මාරු වීමට.</p></div>
+        <div class="cmd-card"><span class="cmd-tag">Merge</span><span class="cmd-badge">git merge new-feature</span><p>"new-feature" branch එකේ වෙනස්කම් main branch එකට එකතු කරයි.</p></div>
+        <div class="cmd-card"><span class="cmd-tag">Delete</span><span class="cmd-badge">git branch -d new-feature</span><p>වැඩ ඉවර වූ, main එකට merge කළ branch එක මකා දමයි.</p></div>
+      </div>
+    </section>
+
+    <!-- 06 -->
+    <section class="section" id="upload">
+      <div class="section-head">
+        <div><p class="eyebrow">06 · Full Workflow</p><h2>ඔබේ Project එක ප්‍රථම වතාවට GitHub වෙත Upload කිරීම</h2></div>
+        <button class="done-btn" data-target="upload">✓ ඉගෙන ගත්තා</button>
+      </div>
+      <ol class="step-list">
+        <li><h4>GitHub වෙබ් අඩවියේ අලුත් Repository එකක් හදන්න</h4><p>github.com වෙත ගිහින් login වෙන්න, ඉහළ දකුණේ <strong>"+"</strong> → <strong>"New repository"</strong> click කරන්න. නමක් දීලා "Create repository" click කරන්න.</p></li>
+        <li><h4>VS Code Terminal එකේ Project එක Git වෙත සම්බන්ධ කරන්න</h4><p>ඔබේ project folder එකේ terminal open කරගෙන, පහත commands එකින් එක run කරන්න:</p>
+          <div class="code-wrap"><pre><code>git init
+git add .
+git commit -m "First commit"
+git branch -M main</code></pre><button class="copy-btn">📋 Copy</button></div>
+        </li>
+        <li><h4>GitHub Repository එකට Connect කරන්න</h4><p>GitHub එකේ repository page එකේ පෙන්නන <code>URL</code> එක copy කරගෙන:</p>
+          <div class="code-wrap"><pre><code>git remote add origin https://github.com/username/repo-name.git
+git push -u origin main</code></pre><button class="copy-btn">📋 Copy</button></div>
+        </li>
+        <li><h4>Refresh කරලා බලන්න</h4><p>GitHub page එක refresh කරන්න — ඔබේ files ඔක්කොම එහෙට upload වෙලා තියෙනවා දකින්න පුළුවන්! 🎉</p></li>
+      </ol>
+    </section>
+
+    <!-- 07 -->
+    <section class="section" id="pr">
+      <div class="section-head">
+        <div><p class="eyebrow">07 · Collaboration</p><h2>Pull Request (PR) එකක් යනු කුමක්ද?</h2></div>
+        <button class="done-btn" data-target="pr">✓ ඉගෙන ගත්තා</button>
+      </div>
+      <p>Team එකක් එක්ක වැඩ කරද්දී, ඔබ කරන වෙනස්කම් කෙලින්ම <code>main</code> branch එකට දාන්නේ නෑ. ඒ වෙනුවට <strong>Pull Request</strong> එකක් හදලා, team එකේ අනිත් අයගේ අනුමැතිය ලබාගෙන පස්සේ merge කරනවා.</p>
+      <div class="flow">
+        <div class="flow-step">1. Branch එකක් හදන්න</div><span class="flow-arrow">→</span>
+        <div class="flow-step">2. GitHub වෙත Push කරන්න</div><span class="flow-arrow">→</span>
+        <div class="flow-step">3. "New Pull Request" open කරන්න</div><span class="flow-arrow">→</span>
+        <div class="flow-step">4. Review ඉල්ලන්න</div><span class="flow-arrow">→</span>
+        <div class="flow-step">5. Merge කරන්න</div>
+      </div>
+      <ol class="step-list">
+        <li><h4>Branch එකක් හදලා වෙනස්කම් කරන්න</h4><p><code>git checkout -b my-fix</code> කරලා code වෙනස් කරන්න.</p></li>
+        <li><h4>GitHub වෙත Push කරන්න</h4>
+          <div class="code-wrap"><pre><code>git push -u origin my-fix</code></pre><button class="copy-btn">📋 Copy</button></div>
+        </li>
+        <li><h4>"Compare &amp; pull request" Click කරන්න</h4><p>GitHub repository page එකට යනකොට, ඔබේ නව branch එක සම්බන්ධව එම බටනය automatic ලෙස පෙන්නනවා.</p></li>
+        <li><h4>විස්තරයක් ලියලා Submit කරන්න</h4><p>මොනවද වෙනස් කළේ කියලා කෙටියෙන් ලියන්න, පසුව "Create pull request" click කරන්න.</p></li>
+        <li><h4>Review වුණාට පස්සේ Merge කරන්න</h4><p>Team member කෙනෙක් approve කළාට පස්සේ, "Merge pull request" click කරලා ඔබේ වෙනස්කම් <code>main</code> එකට එකතු කරගන්න.</p></li>
+      </ol>
+    </section>
+
+    <!-- 08 -->
+    <section class="section" id="pages">
+      <div class="section-head">
+        <div><p class="eyebrow">08 · Hosting</p><h2>GitHub Pages — නොමිලේ Website Host කිරීම</h2></div>
+        <button class="done-btn" data-target="pages">✓ ඉගෙන ගත්තා</button>
+      </div>
+      <p>ඔබ හදපු HTML/CSS/JS website එකක් සම්පූර්ණයෙන්ම නොමිලේ, GitHub Pages හරහා internet එකට live කරන්න පුළුවන්.</p>
+      <ol class="step-list">
+        <li><h4>Repository Settings වෙත යන්න</h4><p>ඔබේ GitHub repository එකේ ඉහළ "Settings" tab එක click කරන්න.</p></li>
+        <li><h4>Pages Section එක සොයන්න</h4><p>වම් පැත්තේ menu එකේ "Pages" click කරන්න.</p></li>
+        <li><h4>Branch එක තෝරන්න</h4><p>"Source" එකේ <code>main</code> branch එක තෝරලා "Save" click කරන්න.</p></li>
+        <li><h4>ඔබේ Site Live!</h4><p>විනාඩි කිහිපයකින් ඔබේ site එක <code>https://username.github.io/repo-name</code> ලෙස internet එකේ live වෙනවා.</p></li>
+      </ol>
+    </section>
+
+    <!-- 09 -->
+    <section class="section" id="cheatsheet">
+      <div class="section-head">
+        <div><p class="eyebrow">09 · Quick Reference</p><h2>Git Cheat Sheet</h2></div>
+        <button class="done-btn" data-target="cheatsheet">✓ ඉගෙන ගත්තා</button>
+      </div>
+      <table>
+        <thead><tr><th>Command</th><th>විස්තරය</th></tr></thead>
+        <tbody>
+          <tr><td>git init</td><td>නව repository එකක් ආරම්භ කරයි</td></tr>
+          <tr><td>git clone &lt;url&gt;</td><td>Remote repository එකක් copy කරයි</td></tr>
+          <tr><td>git status</td><td>වත්මන් වෙනස්කම් තත්ත්වය පෙන්වයි</td></tr>
+          <tr><td>git add .</td><td>සියලුම වෙනස්කම් stage කරයි</td></tr>
+          <tr><td>git add &lt;file&gt;</td><td>නිශ්චිත file එකක් පමණක් stage කරයි</td></tr>
+          <tr><td>git commit -m "..."</td><td>Staged වෙනස්කම් save කරයි</td></tr>
+          <tr><td>git push</td><td>Local commits GitHub වෙත යවයි</td></tr>
+          <tr><td>git pull</td><td>GitHub එකේ අලුත් වෙනස්කම් ලබාගනී</td></tr>
+          <tr><td>git log</td><td>Commit history එක පෙන්වයි</td></tr>
+          <tr><td>git branch</td><td>සියලුම branches ලැයිස්තුව</td></tr>
+          <tr><td>git checkout -b &lt;name&gt;</td><td>නව branch එකක් හදලා මාරු වේ</td></tr>
+          <tr><td>git checkout &lt;name&gt;</td><td>වෙනත් branch එකකට මාරු වේ</td></tr>
+          <tr><td>git merge &lt;name&gt;</td><td>Branch එකක් වත්මන් branch එකට එකතු කරයි</td></tr>
+          <tr><td>git branch -d &lt;name&gt;</td><td>Branch එකක් මකා දමයි</td></tr>
+          <tr><td>git remote add origin &lt;url&gt;</td><td>Local repo එක GitHub URL එකකට සම්බන්ධ කරයි</td></tr>
+          <tr><td>git remote -v</td><td>සම්බන්ධිත remote URLs පෙන්වයි</td></tr>
+          <tr><td>git diff</td><td>Line by line වෙනස්කම් පෙන්වයි</td></tr>
+          <tr><td>git stash</td><td>වෙනස්කම් තාවකාලිකව side එකකට තියාගනී</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <footer class="site-footer">
+      <p>❤ සිංහලෙන් නිර්මාණය කරන ලදී — ඉගෙන ගැනීම කවදාවත් නවත්තන්න එපා!</p>
+      <div class="footer-links">
+        <a href="https://git-scm.com/doc" target="_blank" rel="noopener">Git Documentation ↗</a>
+        <a href="https://docs.github.com" target="_blank" rel="noopener">GitHub Documentation ↗</a>
+        <a href="https://code.visualstudio.com/docs" target="_blank" rel="noopener">VS Code Documentation ↗</a>
+      </div>
+    </footer>
+
+  </main>
+</div>
+
+<script>
+(function(){
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- Theme toggle ---------- */
+  function setTheme(light){
+    document.body.classList.toggle('light', light);
+    var icon = light ? '☀️' : '🌙';
+    document.getElementById('themeToggleDesktop').textContent = icon;
+    document.getElementById('themeToggleMobile').textContent = icon;
+  }
+  document.getElementById('themeToggleDesktop').addEventListener('click', function(){
+    setTheme(!document.body.classList.contains('light'));
+  });
+  document.getElementById('themeToggleMobile').addEventListener('click', function(){
+    setTheme(!document.body.classList.contains('light'));
+  });
+
+  /* ---------- Mobile nav ---------- */
+  var sidebar = document.getElementById('sidebar');
+  var overlay = document.getElementById('overlay');
+  function closeNav(){ sidebar.classList.remove('open'); overlay.classList.remove('show'); }
+  document.getElementById('navToggle').addEventListener('click', function(){
+    sidebar.classList.toggle('open'); overlay.classList.toggle('show');
+  });
+  overlay.addEventListener('click', closeNav);
+  document.querySelectorAll('.commit-graph a').forEach(function(a){
+    a.addEventListener('click', closeNav);
+  });
+
+  /* ---------- Scroll progress bar ---------- */
+  var bar = document.getElementById('progressBar');
+  function updateBar(){
+    var h = document.documentElement;
+    var scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+    bar.style.width = (scrolled || 0) + '%';
+  }
+  document.addEventListener('scroll', updateBar, {passive:true});
+  updateBar();
+
+  /* ---------- Scrollspy ---------- */
+  var sections = document.querySelectorAll('.section');
+  var navItems = document.querySelectorAll('#commitGraph li');
+  var mobileTitle = document.getElementById('mobileBarTitle');
+  var titleMap = {};
+  navItems.forEach(function(li){
+    titleMap[li.getAttribute('data-target')] = li.querySelector('.label').textContent;
+  });
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        var id = entry.target.id;
+        navItems.forEach(function(li){ li.classList.remove('active'); });
+        var match = document.querySelector('#commitGraph li[data-target="'+id+'"]');
+        if(match){ match.classList.add('active'); mobileTitle.textContent = titleMap[id]; }
+      }
+    });
+  }, {rootMargin:'-40% 0px -55% 0px'});
+  sections.forEach(function(s){ observer.observe(s); });
+
+  /* ---------- Done buttons + progress ring ---------- */
+  var total = navItems.length;
+  var progressRing = document.getElementById('progressRing');
+  var progressText = document.getElementById('progressText');
+  function updateRing(){
+    var done = document.querySelectorAll('.done-btn.is-done').length;
+    progressRing.style.setProperty('--pct', Math.round((done/total)*100));
+    progressText.textContent = done + '/' + total;
+  }
+  document.querySelectorAll('.done-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      btn.classList.toggle('is-done');
+      btn.textContent = btn.classList.contains('is-done') ? '✓ නිම කළා' : '✓ ඉගෙන ගත්තා';
+      var target = btn.getAttribute('data-target');
+      var navLi = document.querySelector('#commitGraph li[data-target="'+target+'"]');
+      if(navLi) navLi.classList.toggle('done', btn.classList.contains('is-done'));
+      updateRing();
+    });
+  });
+  updateRing();
+
+  /* ---------- Copy buttons ---------- */
+  document.querySelectorAll('.copy-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var codeEl = btn.previousElementSibling.querySelector('code');
+      var text = codeEl.textContent;
+      var done = function(){
+        var original = btn.textContent;
+        btn.textContent = '✓ Copied!';
+        setTimeout(function(){ btn.textContent = original; }, 1600);
+      };
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(done).catch(done);
+      } else {
+        done();
+      }
+    });
+  });
+
+  /* ---------- OS tabs ---------- */
+  document.querySelectorAll('.os-tab').forEach(function(tab){
+    tab.addEventListener('click', function(){
+      var os = tab.getAttribute('data-os');
+      document.querySelectorAll('.os-tab').forEach(function(t){ t.classList.remove('active'); });
+      document.querySelectorAll('.os-panel').forEach(function(p){ p.classList.remove('active'); });
+      tab.classList.add('active');
+      document.querySelector('.os-panel[data-os-panel="'+os+'"]').classList.add('active');
+    });
+  });
+
+  /* ---------- Terminal typewriter ---------- */
+  var script = [
+    {type:'cmd', text:'git init'},
+    {type:'out', text:'Initialized empty Git repository'},
+    {type:'cmd', text:'git add .'},
+    {type:'cmd', text:'git commit -m "my first commit"'},
+    {type:'out', text:'[main (root-commit)] my first commit'},
+    {type:'cmd', text:'git push'},
+    {type:'out', text:'✓ code pushed to GitHub'}
+  ];
+  var body = document.getElementById('terminalBody');
+
+  function renderStatic(){
+    body.innerHTML = '';
+    script.forEach(function(line){
+      var div = document.createElement('div');
+      div.className = 't-line';
+      if(line.type === 'cmd'){
+        div.innerHTML = '<span class="t-prompt">➜</span><span class="t-cmd">'+line.text+'</span>';
+      } else {
+        div.innerHTML = '<span class="t-out">'+line.text+'</span>';
+      }
+      body.appendChild(div);
+    });
+  }
+
+  function typeLoop(){
+    body.innerHTML = '';
+    var i = 0;
+    function nextLine(){
+      if(i >= script.length){
+        setTimeout(typeLoop, 2600);
+        return;
+      }
+      var line = script[i];
+      var div = document.createElement('div');
+      div.className = 't-line';
+      var prefix = document.createElement('span');
+      if(line.type === 'cmd'){ prefix.className = 't-prompt'; prefix.textContent = '➜ '; div.appendChild(prefix); }
+      var textSpan = document.createElement('span');
+      textSpan.className = line.type === 'cmd' ? 't-cmd' : 't-out';
+      div.appendChild(textSpan);
+      var cursor = document.createElement('span');
+      cursor.className = 'cursor';
+      div.appendChild(cursor);
+      body.appendChild(div);
+
+      var j = 0, text = line.text, speed = line.type === 'cmd' ? 45 : 8;
+      function typeChar(){
+        if(j <= text.length){
+          textSpan.textContent = text.slice(0, j);
+          j++;
+          setTimeout(typeChar, speed);
+        } else {
+          cursor.remove();
+          i++;
+          setTimeout(nextLine, line.type === 'cmd' ? 350 : 250);
         }
-    </script>
+      }
+      typeChar();
+    }
+    nextLine();
+  }
 
+  if(reduceMotion){ renderStatic(); } else { typeLoop(); }
+})();
+</script>
 </body>
 </html>
