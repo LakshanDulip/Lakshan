@@ -1,1 +1,160 @@
-<h1>Hello World! මේ මගේ පළමු වෙබ් අඩවියයි.</h1>
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Short Course - Sinhala</title>
+    <style>
+        /* CSS: වෙබ් අඩවිය ලස්සන කරන කොටස */
+        :root {
+            --bg-color: #f6f8fa;
+            --text-color: #24292f;
+            --card-bg: #ffffff;
+            --primary: #2da44e;
+            --border: #d0d7de;
+        }
+        
+        /* Dark Mode සඳහා වර්ණ */
+        body.dark-mode {
+            --bg-color: #0d1117;
+            --text-color: #c9d1d9;
+            --card-bg: #161b22;
+            --primary: #238636;
+            --border: #30363d;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 0;
+            border-bottom: 2px solid var(--border);
+            margin-bottom: 30px;
+        }
+
+        h1 { margin-bottom: 10px; }
+        p.subtitle { color: #57606a; margin-bottom: 20px; }
+        body.dark-mode p.subtitle { color: #8b949e; }
+
+        .card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            border-left: 6px solid var(--primary);
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .card code {
+            background-color: rgba(175, 184, 193, 0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+
+        /* පාඩම සම්පූර්ණ කළ විට පෙන්වන විලාසය */
+        .completed {
+            opacity: 0.5;
+            text-decoration: line-through;
+            border-left: 6px solid #8250df;
+        }
+
+        button {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border);
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            background-color: var(--border);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>🚀 GitHub කෙටි පාඨමාලාව</h1>
+            <p class="subtitle">මුල සිට සරලව සිංහලෙන් - Lakshan විසින් නිර්මාණය කරන ලදී</p>
+            <button id="themeToggle">🌙 Dark Mode</button>
+        </header>
+
+        <p style="text-align: center; font-size: 14px; margin-bottom: 30px;">
+            <i>උපදෙස්: පාඩමක් අවසන් කළ පසු එය මත Click කරන්න.</i>
+        </p>
+
+        <div class="card" onclick="toggleComplete(this)">
+            <h2>1. මූලික කමාන්ඩ්ස් (Basic Commands)</h2>
+            <p>පරිගණකයේ කෝඩ් GitHub එකට යැවීමට <code>git add .</code>, <code>git commit -m "massage"</code> සහ <code>git push</code> භාවිතා කරයි.</p>
+        </div>
+
+        <div class="card" onclick="toggleComplete(this)">
+            <h2>2. අන්තර්ජාලයෙන් ගැනීම (Pull)</h2>
+            <p>වෙනත් අයෙක් හෝ වෙනත් පරිගණකයකින් කළ වෙනස්කම් තමන්ගේ පරිගණකයට ගැනීමට <code>git pull</code> භාවිතා කරයි.</p>
+        </div>
+
+        <div class="card" onclick="toggleComplete(this)">
+            <h2>3. Branches (අතු බෙදීම)</h2>
+            <p>ප්‍රධාන කෝඩ් එකට හානියක් නොකර අලුත් දේවල් අත්හදා බැලීමට <code>git checkout -b branch-name</code> මගින් අලුත් අත්තක් සාදාගනී.</p>
+        </div>
+
+        <div class="card" onclick="toggleComplete(this)">
+            <h2>4. Pull Requests (PR)</h2>
+            <p>වෙනත් Branch එකක කළ වෙනස්කම් ප්‍රධාන කෝඩ් එකට (main) එකතු කිරීමට පෙර අනුමැතිය ලබා ගැනීමට PR එකක් සාදයි.</p>
+        </div>
+
+        <div class="card" onclick="toggleComplete(this)">
+            <h2>5. GitHub Pages (Hosting)</h2>
+            <p>තමන් සෑදූ HTML, CSS, JS වෙබ් අඩවියක් සම්පූර්ණයෙන්ම නොමිලේ අන්තර්ජාලයට (Live) එකතු කිරීමට මෙය භාවිතා කරයි.</p>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript: වෙබ් අඩවියට පණ දෙන කොටස 
+
+        // Dark mode මාරු කරන කේතය
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            if (body.classList.contains('dark-mode')) {
+                themeToggle.textContent = '☀️ Light Mode';
+            } else {
+                themeToggle.textContent = '🌙 Dark Mode';
+            }
+        });
+
+        // කාඩ් එකක් click කළාම කපා හැරෙන (completed) කේතය
+        function toggleComplete(element) {
+            element.classList.toggle('completed');
+        }
+    </script>
+
+</body>
+</html>
